@@ -1,0 +1,2 @@
+[2026-06-19 18:21:32] Prueba de persistencia desde PowerShell
+[2026-06-19 18:28:59] Prueba de persistencia desde PowerShell
