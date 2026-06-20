@@ -6,7 +6,7 @@
 # options:
 #   logging: CLOUD_LOGGING_ONLY
 
-  steps:
+steps:
   # 1. Compilar la imagen usando tu Dockerfile
   - name: 'gcr.io/cloud-builders/docker'
     args: [
@@ -15,7 +15,7 @@
       '.'
     ]
 
-  # 2. Subir automáticamente la imagen a tu Artifact Registry
+  # 2. Subir automáticamente la imagen a tu repositorio en Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'push', 
@@ -23,5 +23,5 @@
     ]
 
 options:
-  # Soluciona el error de "build.service_account" obligando a mostrar los logs en consola
+  # Soluciona el error 'build.service_account' obligando a usar solo la consola web de GCP
   logging: CLOUD_LOGGING_ONLY
