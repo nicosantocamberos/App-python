@@ -11,7 +11,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build', 
-      '-t', 'us-central1-docker.pkg.dev/TU_PROYECTO_ID/mi-repo-python/app-python:latest', 
+      '-t', 'us-central1-docker.pkg.dev/integracion-continua-499416/mi-repo-python/app-python:latest', 
       '.'
     ]
 
@@ -19,9 +19,9 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'push', 
-      'us-central1-docker.pkg.dev/TU_PROYECTO_ID/mi-repo-python/app-python:latest'
+      'us-central1-docker.pkg.dev/integracion-continua-499416/mi-repo-python/app-python:latest'
     ]
 
 options:
-  # Soluciona el error 'build.service_account' obligando a usar solo la consola web de GCP
+  # Desbloquea el error de la cuenta de servicio mostrando los logs en consola
   logging: CLOUD_LOGGING_ONLY
