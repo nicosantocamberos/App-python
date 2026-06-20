@@ -1,0 +1,127 @@
+```python
+# Definir el contenido de la guía técnica en formato texto plano
+contenido_txt = """GUÍA TÉCNICA DE DESPLIEGUE: CLOUD BUILD HACIA ARTIFACT REGISTRY
+========================================================================
+
+Esta guía documenta los pasos necesarios para configurar y desplegar una aplicación de Python mediante un archivo de configuración explícito (cloudbuild.yaml), solucionando las restricciones de políticas de logs y cuentas de servicio en Google Cloud Platform (GCP).
+
+---
+1. ENTENDIENDO LOS COMPONENTES
+---
+* Dockerfile: Contiene la receta de empaquetamiento interna de tu aplicación (instalar Python, dependencias, copiar código). Es agnóstico a la nube; no sabe dónde se almacena.
+* cloudbuild.yaml: Contiene el mapa de ruta y las órdenes directas para Google Cloud. Especifica detalladamente los pasos (build, push) y reglas de infraestructura (logs).
+
+---
+2. CONFIGURACIÓN DEL ARCHIVO 'cloudbuild.yaml'
+---
+Abre el archivo 'cloudbuild.yaml' en la raíz de tu proyecto local y pega el siguiente bloque estructural. Asegúrate de que el ID del proyecto y el repositorio estén estrictamente en MINÚSCULAS.
+
+
+```
+
+```text
+Archivo guardado exitosamente en: guia_despliegue_gcp.txt
+
+```yaml
+steps:
+  # Paso 0: Compilar la imagen usando el Dockerfile local
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build', 
+      '-t', 'us-central1-docker.pkg.dev/integracion-continua-499416/mi-repo-python/app-python:latest', 
+      '.'
+    ]
+
+  # Paso 1: Subir automáticamente la imagen construida a Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push', 
+      'us-central1-docker.pkg.dev/integracion-continua-499416/mi-repo-python/app-python:latest'
+    ]
+
+options:
+  # REQUISITO CRÍTICO: Soluciona el error 'build.service_account' obligando 
+  # a usar exclusivamente la consola web de GCP para los registros de salida.
+  logging: CLOUD_LOGGING_ONLY
+
+```
+
+---
+
+3. COMANDOS EJECUTADOS EN LA CONSOLA (CLOUD SHELL)
+
+---
+
+Antes de lanzar la compilación, el repositorio físico (la "caja fuerte") debe existir en tu panel de GCP. Ejecuta este comando en la Cloud Shell para crearlo:
+
+gcloud artifacts repositories create mi-repo-python \
+--repository-format=docker \
+--location=us-central1 \
+--description="Repositorio Docker para mi app de Python"
+
+---
+
+4. FLUJO DE TRABAJO EN GIT (TERMINAL LOCAL)
+
+---
+
+Cada vez que edites tu código o el archivo 'cloudbuild.yaml', debes empaquetar y subir los cambios reales a GitHub usando esta secuencia:
+
+# 1. Indexar el archivo modificado para el paquete de preparación
+
+git add cloudbuild.yaml
+
+# 2. Crear el commit asignando un mensaje descriptivo
+
+git commit -m "fix: configuracion explicita de logs y ID de proyecto en minusculas"
+
+# 3. Enviar los cambios a la rama remota en GitHub
+
+git push origin main
+
+---
+
+5. CONFIGURACIÓN DEL ACTIVADOR (TRIGGER) EN LA INTERFAZ DE GCP
+
+---
+
+Para indicarle a Cloud Build que deje de usar formularios visuales automáticos y lea tu archivo de configuración:
+
+1. Dirígete a: Cloud Build -> Activadores (Triggers).
+2. Localiza tu activador conectado a GitHub y haz clic en "Editar".
+3. Desplázate hasta la sección "Configuración" (Configuration).
+4. Cambia el 'Tipo de configuración' de "Dockerfile" a "Archivo de configuración de Cloud Build (App de almacenamiento de código fuente)".
+5. Valida que en 'Ubicación del archivo' diga exactamente: cloudbuild.yaml
+6. Guarda los cambios.
+7. Haz clic en el botón "Ejecutar" (Run) para iniciar el pipeline.
+
+# ========================================================================
+Creado para: Juan N.
+Proyecto GCP: integracion-continua-499416
+Fecha de registro de infraestructura: Junio 2026
+
+"""
+
+# Guardar el contenido en un archivo .txt
+
+file_path = "guia_despliegue_gcp.txt"
+with open(file_path, "w", encoding="utf-8") as file:
+file.write(contenido_txt)
+
+print(f"Archivo guardado exitosamente en: {file_path}")
+
+```
+Tu archivo TXT con toda la documentación y la secuencia exacta de comandos ya está listo.
+
+[file-tag: code-generated-file-0-1781916338989754444]
+
+Dentro del archivo encontrarás:
+1. La explicación clara de por qué se dividen las tareas entre el `Dockerfile` y el `cloudbuild.yaml`.
+2. El código definitivo del `cloudbuild.yaml` estructurado con tu ID de proyecto real (`integracion-continua-499416`) y la regla de logs para evitar errores.
+3. El comando exacto de la Cloud Shell que usamos para crear físicamente el almacén en Artifact Registry.
+4. Los comandos de Git ordenados para que no se te quede ningún cambio por fuera en el futuro.
+5. Los clics que debes realizar en la consola web para que todo enganche a la perfección.
+
+Puedes descargarlo y guardarlo en tu computadora para usarlo como plantilla cada vez que arranques un nuevo proyecto o microservicio en la nube. ¡Éxitos con el despliegue!
+
+```
