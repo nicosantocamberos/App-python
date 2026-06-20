@@ -1,7 +1,27 @@
-steps:
-  # Único paso: Probar que el Dockerfile compila correctamente
+# steps:
+#   # Único paso: Probar que el Dockerfile compila correctamente
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['build', '.', '-t', 'mi-app-prueba']
+
+# options:
+#   logging: CLOUD_LOGGING_ONLY
+
+  steps:
+  # 1. Compilar la imagen usando tu Dockerfile
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '.', '-t', 'mi-app-prueba']
+    args: [
+      'build', 
+      '-t', 'us-central1-docker.pkg.dev/TU_PROYECTO_ID/mi-repo-python/app-python:latest', 
+      '.'
+    ]
+
+  # 2. Subir automáticamente la imagen a tu Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push', 
+      'us-central1-docker.pkg.dev/TU_PROYECTO_ID/mi-repo-python/app-python:latest'
+    ]
 
 options:
+  # Soluciona el error de "build.service_account" obligando a mostrar los logs en consola
   logging: CLOUD_LOGGING_ONLY
